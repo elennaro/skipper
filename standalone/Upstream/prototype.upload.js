@@ -40,7 +40,7 @@ var Writable = require('stream').Writable; // (for the leaky pipe)
  * @chainable
  */
 
-module.exports = function upload(opts, _cb) {
+module.exports = function upload (opts, _cb) {
   var self = this;
   var USAGE = '.upload([receiver] [,callback])';
 
@@ -53,9 +53,7 @@ module.exports = function upload(opts, _cb) {
   // Handle first argument when it's specified as string
   // (save it as the `saveAs` opt)
   if (typeof opts === 'string') {
-    opts = {
-      saveAs: opts
-    };
+    opts = { saveAs: opts };
   }
 
   // Handle `saveAs` when it's specified as string (normalize to fn)
@@ -69,14 +67,14 @@ module.exports = function upload(opts, _cb) {
     }
     // And in any case, we'll normalize "saveAs" to a function
     var desiredFilename = opts.saveAs;
-    opts.saveAs = function(__newFile, next) {
+    opts.saveAs = function (__newFile, next) {
       next(null, desiredFilename);
     };
   }
 
   // Ensure callback exists and can only be triggered once
   var cbTriggered;
-  var cb = function(err, files) {
+  var cb = function (err, files){
     if (cbTriggered) return;
     cbTriggered = true;
 
@@ -109,17 +107,16 @@ module.exports = function upload(opts, _cb) {
   }
 
   // If error is emitted on this upstream, trigger the callback
-  self.once('error', function(err) {
-    debug('upstream emitted error, forcing us to trigger the callback for .upload() with err: %s', err);
+  self.once('error', function (err){
+    debug('upstream emitted error, forcing us to trigger the callback for .upload() with err: %s',err);
     return cb(err);
   });
 
   // Locate, normalize, and/or build a receiver instance using the value passed in
   // as the first argument (`receiver__`)
   var receiver__;
-  try {
-    receiver__ = buildOrNormalizeReceiver(opts);
-  } catch (e) {
+  try { receiver__ = buildOrNormalizeReceiver(opts); }
+  catch (e) {
     return cb(e);
   }
 
@@ -168,11 +165,11 @@ module.exports = function upload(opts, _cb) {
     log: log
   });
 
-  //build an accepter stream. that will run acceptFile function (if provided) on each file 
+  //build an accepter stream. that will run acceptFile function (if provided) on each file
   //to see if we want to accept this file. Also needs a referenc to self._files to add metadata
-  var __accepter__ = buildAccepterStream(opts.acceptFile,self._files);
+  var __accepter__ = buildAccepterStream(opts.acceptFile, self._files);
 
-  __accepter__.once('error', function unableToUpload(err) {
+  __accepter__.once('error', function unableToUpload (err) {
     log.color('red').write('A receiver handling Upstream `%s` encountered a write error :', self.fieldName, util.inspect(err));
 
     // Forcibly end the incoming stream of files on this upstream
@@ -193,3 +190,5 @@ module.exports = function upload(opts, _cb) {
   // Chainable
   return self;
 };
+
+

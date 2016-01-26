@@ -77,7 +77,6 @@ module.exports = function upload (opts, _cb) {
   var cb = function (err, files){
     if (cbTriggered) return;
     cbTriggered = true;
-
     if (typeof _cb === 'function') {
       return _cb(err, files);
     }
